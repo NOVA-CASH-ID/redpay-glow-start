@@ -1,0 +1,167 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.13 0.02 20);
+  --foreground: oklch(0.97 0.005 20);
+  --card: oklch(0.18 0.025 20);
+  --card-foreground: oklch(0.97 0.005 20);
+  --popover: oklch(0.17 0.025 20);
+  --popover-foreground: oklch(0.97 0.005 20);
+  --primary: oklch(0.58 0.23 25);
+  --primary-glow: oklch(0.68 0.24 28);
+  --primary-foreground: oklch(0.99 0.005 20);
+  --secondary: oklch(0.24 0.03 20);
+  --secondary-foreground: oklch(0.97 0.005 20);
+  --muted: oklch(0.24 0.02 20);
+  --muted-foreground: oklch(0.68 0.02 20);
+  --accent: oklch(0.28 0.06 25);
+  --accent-foreground: oklch(0.97 0.005 20);
+  --destructive: oklch(0.62 0.22 22);
+  --destructive-foreground: oklch(0.99 0.005 20);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.58 0.23 25);
+  --glass: oklch(0.22 0.03 20 / 55%);
+  --glass-border: oklch(1 0 0 / 12%);
+
+  --gradient-primary: linear-gradient(135deg, var(--primary-glow), var(--primary));
+  --gradient-page: radial-gradient(
+      120% 80% at 50% -10%,
+      oklch(0.35 0.14 25 / 55%) 0%,
+      transparent 60%
+    ),
+    radial-gradient(90% 60% at 110% 40%, oklch(0.3 0.12 22 / 35%) 0%, transparent 60%),
+    radial-gradient(100% 70% at -10% 90%, oklch(0.3 0.12 22 / 30%) 0%, transparent 60%);
+  --shadow-glow: 0 10px 40px -8px oklch(0.58 0.23 25 / 55%);
+  --shadow-glass: 0 8px 32px -12px oklch(0 0 0 / 70%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: var(--color-background);
+    background-image: var(--gradient-page);
+    background-attachment: fixed;
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+@utility glow-red {
+  box-shadow: var(--shadow-glow);
+}
+
+@utility text-glow {
+  text-shadow: 0 0 24px oklch(0.58 0.23 25 / 70%);
+}
+
+@utility gradient-red {
+  background-image: var(--gradient-primary);
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-120px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+@utility particle {
+  animation: float-up 7s linear infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 30px -6px oklch(0.58 0.23 25 / 60%);
+  }
+  50% {
+    box-shadow: 0 0 60px 0 oklch(0.68 0.24 28 / 80%);
+  }
+}
+
+@utility pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility rise-in {
+  animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rpc-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
