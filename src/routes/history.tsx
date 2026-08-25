@@ -147,7 +147,7 @@ function stamp(iso: string) {
 function statusTone(status: string) {
   const s = status.toLowerCase();
   if (s.includes("pend") || s.includes("process")) return "bg-orange-500/15 text-orange-400";
-  if (s.includes("fail") || s.includes("declин") || s.includes("declin"))
+  if (s.includes("fail") || s.includes("declin"))
     return "bg-destructive/15 text-destructive";
   return "bg-emerald-500/15 text-emerald-400";
 }
