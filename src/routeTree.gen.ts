@@ -10,20 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as BuyDataRouteImport } from './routes/buy-data'
 import { Route as BuyRpcRouteImport } from './routes/buy-rpc'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferRouteImport } from './routes/refer'
 import { Route as RpcLoadingRouteImport } from './routes/rpc-loading'
 import { Route as RpcNoticeRouteImport } from './routes/rpc-notice'
 import { Route as RpcPaymentRouteImport } from './routes/rpc-payment'
 import { Route as RpcPendingRouteImport } from './routes/rpc-pending'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivityRoute = ActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuyDataRoute = BuyDataRouteImport.update({
@@ -41,9 +50,19 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReferRoute = ReferRouteImport.update({
@@ -71,6 +90,11 @@ const RpcPendingRoute = RpcPendingRouteImport.update({
   path: '/rpc-pending',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -79,97 +103,125 @@ const WelcomeRoute = WelcomeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/buy-data': typeof BuyDataRoute
   '/buy-rpc': typeof BuyRpcRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
   '/rpc-pending': typeof RpcPendingRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/buy-data': typeof BuyDataRoute
   '/buy-rpc': typeof BuyRpcRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
   '/rpc-pending': typeof RpcPendingRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/buy-data': typeof BuyDataRoute
   '/buy-rpc': typeof BuyRpcRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
   '/rpc-pending': typeof RpcPendingRoute
+  '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activity'
     | '/buy-data'
     | '/buy-rpc'
     | '/dashboard'
+    | '/history'
     | '/login'
+    | '/profile'
     | '/refer'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
     | '/rpc-pending'
+    | '/support'
     | '/welcome'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activity'
     | '/buy-data'
     | '/buy-rpc'
     | '/dashboard'
+    | '/history'
     | '/login'
+    | '/profile'
     | '/refer'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
     | '/rpc-pending'
+    | '/support'
     | '/welcome'
   id:
     | '__root__'
     | '/'
+    | '/activity'
     | '/buy-data'
     | '/buy-rpc'
     | '/dashboard'
+    | '/history'
     | '/login'
+    | '/profile'
     | '/refer'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
     | '/rpc-pending'
+    | '/support'
     | '/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivityRoute: typeof ActivityRoute
   BuyDataRoute: typeof BuyDataRoute
   BuyRpcRoute: typeof BuyRpcRoute
   DashboardRoute: typeof DashboardRoute
+  HistoryRoute: typeof HistoryRoute
   LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
   ReferRoute: typeof ReferRoute
   RpcLoadingRoute: typeof RpcLoadingRoute
   RpcNoticeRoute: typeof RpcNoticeRoute
   RpcPaymentRoute: typeof RpcPaymentRoute
   RpcPendingRoute: typeof RpcPendingRoute
+  SupportRoute: typeof SupportRoute
   WelcomeRoute: typeof WelcomeRoute
 }
 
@@ -180,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buy-data': {
@@ -203,11 +262,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refer': {
@@ -245,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RpcPendingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
@@ -257,15 +337,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivityRoute: ActivityRoute,
   BuyDataRoute: BuyDataRoute,
   BuyRpcRoute: BuyRpcRoute,
   DashboardRoute: DashboardRoute,
+  HistoryRoute: HistoryRoute,
   LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
   ReferRoute: ReferRoute,
   RpcLoadingRoute: RpcLoadingRoute,
   RpcNoticeRoute: RpcNoticeRoute,
   RpcPaymentRoute: RpcPaymentRoute,
   RpcPendingRoute: RpcPendingRoute,
+  SupportRoute: SupportRoute,
   WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport

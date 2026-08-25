@@ -53,8 +53,8 @@ const QUICK_ACTIONS = [
   { icon: Radio, label: "Broadcast", to: "/buy-rpc" },
   { icon: Gift, label: "Refer & Earn", to: "/refer" },
   { icon: Users, label: "Community", to: "/refer" },
-  { icon: History, label: "History", to: undefined },
-  { icon: Headphones, label: "Support", to: undefined },
+  { icon: History, label: "History", to: "/history" },
+  { icon: Headphones, label: "Support", to: "/support" },
 ] as const;
 
 function useCountdown(target: Date | null) {
@@ -130,6 +130,13 @@ function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ["profile", userId] }),
       queryClient.invalidateQueries({ queryKey: ["transactions", userId] }),
     ]);
+  }
+
+  function onNav(k: NavKey) {
+    setTab(k);
+    if (k === "activity") navigate({ to: "/activity" });
+    if (k === "support") navigate({ to: "/support" });
+    if (k === "profile") navigate({ to: "/profile" });
   }
 
   async function signOut() {
@@ -376,7 +383,7 @@ function Dashboard() {
         </button>
       </main>
 
-      <BottomNav active={tab} onChange={setTab} />
+      <BottomNav active={tab} onChange={onNav} />
     </div>
   );
 }
