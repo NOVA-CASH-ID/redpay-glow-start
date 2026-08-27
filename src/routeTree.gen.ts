@@ -24,6 +24,7 @@ import { Route as RpcPaymentRouteImport } from './routes/rpc-payment'
 import { Route as RpcPendingRouteImport } from './routes/rpc-pending'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as WithdrawRouteImport } from './routes/withdraw'
 import { Route as WithdrawLoadingRouteImport } from './routes/withdraw-loading'
 
 const IndexRoute = IndexRouteImport.update({
@@ -101,6 +102,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WithdrawRoute = WithdrawRouteImport.update({
+  id: '/withdraw',
+  path: '/withdraw',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WithdrawLoadingRoute = WithdrawLoadingRouteImport.update({
   id: '/withdraw-loading',
   path: '/withdraw-loading',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/rpc-pending': typeof RpcPendingRoute
   '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
+  '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
 }
 export interface FileRoutesByTo {
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/rpc-pending': typeof RpcPendingRoute
   '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
+  '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
 }
 export interface FileRoutesById {
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/rpc-pending': typeof RpcPendingRoute
   '/support': typeof SupportRoute
   '/welcome': typeof WelcomeRoute
+  '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
 }
 export interface FileRouteTypes {
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/rpc-pending'
     | '/support'
     | '/welcome'
+    | '/withdraw'
     | '/withdraw-loading'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/rpc-pending'
     | '/support'
     | '/welcome'
+    | '/withdraw'
     | '/withdraw-loading'
   id:
     | '__root__'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/rpc-pending'
     | '/support'
     | '/welcome'
+    | '/withdraw'
     | '/withdraw-loading'
   fileRoutesById: FileRoutesById
 }
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   RpcPendingRoute: typeof RpcPendingRoute
   SupportRoute: typeof SupportRoute
   WelcomeRoute: typeof WelcomeRoute
+  WithdrawRoute: typeof WithdrawRoute
   WithdrawLoadingRoute: typeof WithdrawLoadingRoute
 }
 
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/withdraw': {
+      id: '/withdraw'
+      path: '/withdraw'
+      fullPath: '/withdraw'
+      preLoaderRoute: typeof WithdrawRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/withdraw-loading': {
       id: '/withdraw-loading'
       path: '/withdraw-loading'
@@ -371,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   RpcPendingRoute: RpcPendingRoute,
   SupportRoute: SupportRoute,
   WelcomeRoute: WelcomeRoute,
+  WithdrawRoute: WithdrawRoute,
   WithdrawLoadingRoute: WithdrawLoadingRoute,
 }
 export const routeTree = rootRouteImport
