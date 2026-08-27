@@ -1,0 +1,27 @@
+REVOKE EXECUTE ON FUNCTION public.check_rpc_code(text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.claim_bonus() FROM anon;
+REVOKE EXECUTE ON FUNCTION public.purchase_card(text,text,text,text,numeric,integer,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.start_group_reward(text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.verify_group_reward(text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.is_banned(uuid) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.check_withdrawal_code(text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.request_withdrawal(numeric,text,text,text,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.submit_payment(numeric,text,text,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.admin_review_payment(uuid,text,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.admin_review_withdrawal(uuid,text,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.admin_set_ban(uuid,boolean,text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.admin_update_setting(text,jsonb) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.admin_stats() FROM anon;
+REVOKE EXECUTE ON FUNCTION public.touch_last_seen() FROM anon;
+
+REVOKE EXECUTE ON FUNCTION public.admin_review_payment(uuid,text,text) FROM public;
+REVOKE EXECUTE ON FUNCTION public.admin_review_withdrawal(uuid,text,text) FROM public;
+REVOKE EXECUTE ON FUNCTION public.admin_set_ban(uuid,boolean,text) FROM public;
+REVOKE EXECUTE ON FUNCTION public.admin_update_setting(text,jsonb) FROM public;
+REVOKE EXECUTE ON FUNCTION public.admin_stats() FROM public;
+GRANT EXECUTE ON FUNCTION public.admin_review_payment(uuid,text,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_review_withdrawal(uuid,text,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_set_ban(uuid,boolean,text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_update_setting(text,jsonb) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_stats() TO authenticated;
