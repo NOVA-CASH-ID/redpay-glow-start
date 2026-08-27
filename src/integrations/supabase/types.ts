@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json
+          id: string
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json
+          id?: string
+          target_id?: string | null
+          target_type?: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           active: boolean
@@ -95,47 +125,110 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          admin_note: string | null
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          purpose: string
+          reference: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          screenshot_path: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          purpose?: string
+          reference?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_path?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          purpose?: string
+          reference?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_path?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_id: string
           balance: number
+          ban_reason: string | null
+          banned_at: string | null
           country: string | null
           created_at: string
+          email: string | null
           first_name: string
           id: string
           last_claim_at: string | null
           last_name: string
+          last_seen_at: string
           phone: string | null
           referral_code: string
           referral_count: number
+          status: string
           updated_at: string
         }
         Insert: {
           account_id: string
           balance?: number
+          ban_reason?: string | null
+          banned_at?: string | null
           country?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string
           id: string
           last_claim_at?: string | null
           last_name?: string
+          last_seen_at?: string
           phone?: string | null
           referral_code: string
           referral_count?: number
+          status?: string
           updated_at?: string
         }
         Update: {
           account_id?: string
           balance?: number
+          ban_reason?: string | null
+          banned_at?: string | null
           country?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string
           id?: string
           last_claim_at?: string | null
           last_name?: string
+          last_seen_at?: string
           phone?: string | null
           referral_code?: string
           referral_count?: number
+          status?: string
           updated_at?: string
         }
         Relationships: []
@@ -305,12 +398,81 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawals: {
+        Row: {
+          account_name: string
+          account_number: string
+          admin_note: string | null
+          amount: number
+          bank_name: string
+          created_at: string
+          id: string
+          method: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          rpc_code: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_name?: string
+          account_number?: string
+          admin_note?: string | null
+          amount?: number
+          bank_name?: string
+          created_at?: string
+          id?: string
+          method?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rpc_code?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          admin_note?: string | null
+          amount?: number
+          bank_name?: string
+          created_at?: string
+          id?: string
+          method?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rpc_code?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      admin_review_payment: {
+        Args: { _note?: string; _payment_id: string; _status: string }
+        Returns: Json
+      }
+      admin_review_withdrawal: {
+        Args: { _note?: string; _status: string; _withdrawal_id: string }
+        Returns: Json
+      }
+      admin_set_ban: {
+        Args: { _banned: boolean; _reason?: string; _user_id: string }
+        Returns: Json
+      }
+      admin_stats: { Args: never; Returns: Json }
+      admin_update_setting: {
+        Args: { _key: string; _value: Json }
+        Returns: Json
+      }
       check_rpc_code: { Args: { _code: string }; Returns: Json }
+      check_withdrawal_code: { Args: { _code: string }; Returns: Json }
       claim_bonus: { Args: never; Returns: Json }
       has_role: {
         Args: {
@@ -319,6 +481,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_banned: { Args: { _user_id: string }; Returns: boolean }
       purchase_card: {
         Args: {
           _card_type: string
@@ -331,7 +494,27 @@ export type Database = {
         }
         Returns: Json
       }
+      request_withdrawal: {
+        Args: {
+          _account_name: string
+          _account_number: string
+          _amount: number
+          _bank_name: string
+          _code: string
+        }
+        Returns: Json
+      }
       start_group_reward: { Args: { _channel: string }; Returns: Json }
+      submit_payment: {
+        Args: {
+          _amount: number
+          _purpose?: string
+          _reference: string
+          _screenshot_path: string
+        }
+        Returns: Json
+      }
+      touch_last_seen: { Args: never; Returns: Json }
       verify_group_reward: { Args: { _channel: string }; Returns: Json }
     }
     Enums: {
