@@ -233,9 +233,13 @@ function Dashboard() {
                 )}
                 {countdown ? countdown : "Claim"}
               </button>
-              <button className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-background/85 text-sm font-semibold text-foreground transition-transform active:scale-95">
+              <button
+                onClick={() => navigate({ to: "/withdraw-loading" })}
+                className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-background/85 text-sm font-semibold text-foreground transition-transform active:scale-95"
+              >
                 <Send className="size-4 text-primary" /> Withdraw
               </button>
+
             </div>
 
             {claimMsg ? <p className="mt-2.5 text-center text-xs opacity-90">{claimMsg}</p> : null}
