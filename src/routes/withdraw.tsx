@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Banknote, Landmark, Loader2, ShieldCheck, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/redpay/PageHeader";
-import { BottomNav } from "@/components/redpay/BottomNav";
+import { BottomNav, type NavKey } from "@/components/redpay/BottomNav";
 import { RpcCodeInput, type RpcBenefit } from "@/components/redpay/RpcCodeInput";
 import { useProfile, useSession } from "@/hooks/useRedpay";
 
@@ -35,6 +35,8 @@ const NGN = new Intl.NumberFormat("en-NG", {
 });
 
 function WithdrawPage() {
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<NavKey>("wallet");
   const { session } = useSession();
   const profile = useProfile(session?.user.id);
   const balance = Number(profile.data?.balance ?? 0);
@@ -55,6 +57,14 @@ function WithdrawPage() {
     accountNumber.trim().length >= 10 &&
     accountName.trim().length > 2 &&
     !!benefit;
+
+  function onNav(k: NavKey) {
+    setTab(k);
+    if (k === "home" || k === "wallet") navigate({ to: "/dashboard" });
+    if (k === "activity") navigate({ to: "/activity" });
+    if (k === "support") navigate({ to: "/support" });
+    if (k === "profile") navigate({ to: "/profile" });
+  }
 
   function submit() {
     if (!valid) return;
@@ -171,7 +181,7 @@ function WithdrawPage() {
         ) : null}
       </main>
 
-      <BottomNav />
+      <BottomNav active={tab} onChange={onNav} />
     </div>
   );
 }
