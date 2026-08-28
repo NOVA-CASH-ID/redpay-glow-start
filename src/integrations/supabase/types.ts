@@ -454,6 +454,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_get_settings: { Args: never; Returns: Json }
+      admin_list_payments: {
+        Args: { _search?: string; _status?: string }
+        Returns: Json
+      }
+      admin_list_users: {
+        Args: {
+          _limit?: number
+          _offset?: number
+          _search?: string
+          _status?: string
+        }
+        Returns: Json
+      }
+      admin_list_withdrawals: { Args: { _status?: string }; Returns: Json }
       admin_review_payment: {
         Args: { _note?: string; _payment_id: string; _status: string }
         Returns: Json
@@ -466,11 +481,16 @@ export type Database = {
         Args: { _banned: boolean; _reason?: string; _user_id: string }
         Returns: Json
       }
+      admin_signed_proof_path: {
+        Args: { _payment_id: string }
+        Returns: string
+      }
       admin_stats: { Args: never; Returns: Json }
       admin_update_setting: {
         Args: { _key: string; _value: Json }
         Returns: Json
       }
+      admin_user_detail: { Args: { _user_id: string }; Returns: Json }
       check_rpc_code: { Args: { _code: string }; Returns: Json }
       check_withdrawal_code: { Args: { _code: string }; Returns: Json }
       claim_bonus: { Args: never; Returns: Json }
