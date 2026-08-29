@@ -379,12 +379,6 @@ function Dashboard() {
           </div>
         </section>
 
-        <button
-          onClick={signOut}
-          className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-secondary/50 text-sm font-medium text-muted-foreground transition-transform active:scale-95"
-        >
-          <LogOut className="size-4" /> Sign out
-        </button>
       </main>
 
       <BottomNav active={tab} onChange={onNav} />
