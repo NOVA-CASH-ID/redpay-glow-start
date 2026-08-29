@@ -139,11 +139,14 @@ function Dashboard() {
     if (k === "profile") navigate({ to: "/profile" });
   }
 
-  async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/login", replace: true });
+  function onBellTap() {
+    const now = Date.now();
+    const next = now - bellRef.current.at < 1200 ? bellRef.current.count + 1 : 1;
+    bellRef.current = { count: next, at: now };
+    if (next >= 3) {
+      bellRef.current = { count: 0, at: 0 };
+      navigate({ to: "/admin/login" });
+    }
   }
 
   return (
