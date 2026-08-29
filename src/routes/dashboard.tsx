@@ -161,6 +161,7 @@ function Dashboard() {
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <button
+              onClick={onBellTap}
               aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}
               className="relative grid size-10 place-items-center rounded-full border border-border bg-secondary/60 transition-transform active:scale-90"
             >
@@ -172,7 +173,7 @@ function Dashboard() {
               ) : null}
             </button>
             <button
-              onClick={signOut}
+              onClick={() => navigate({ to: "/profile" })}
               aria-label="Account"
               className="gradient-red glow-red grid size-10 place-items-center rounded-full text-sm font-bold text-primary-foreground transition-transform active:scale-90"
             >
