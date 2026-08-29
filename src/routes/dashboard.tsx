@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bell,
   Eye,
@@ -13,7 +13,6 @@ import {
   Headphones,
   UserRound,
   AlertCircle,
-  LogOut,
   Loader2,
 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -89,6 +88,7 @@ function Dashboard() {
 
   const [hidden, setHidden] = useState(false);
   const [tab, setTab] = useState<NavKey>("home");
+  const bellRef = useRef({ count: 0, at: 0 });
   const [slide, setSlide] = useState(0);
   const [claiming, setClaiming] = useState(false);
   const [claimMsg, setClaimMsg] = useState<string | null>(null);
