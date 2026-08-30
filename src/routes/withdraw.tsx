@@ -1,10 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Banknote, Landmark, Loader2, ShieldCheck, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Banknote, KeyRound, Landmark, Loader2, ShieldCheck, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/redpay/PageHeader";
 import { BottomNav, type NavKey } from "@/components/redpay/BottomNav";
-import { RpcCodeInput, type RpcBenefit } from "@/components/redpay/RpcCodeInput";
+import { supabase } from "@/integrations/supabase/client";
+import { useAppSetting } from "@/hooks/useAdmin";
 import { useProfile, useSession } from "@/hooks/useRedpay";
+
 
 export const Route = createFileRoute("/withdraw")({
   ssr: false,
@@ -36,18 +39,27 @@ const NGN = new Intl.NumberFormat("en-NG", {
 
 function WithdrawPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<NavKey>("wallet");
   const { session } = useSession();
   const profile = useProfile(session?.user.id);
   const balance = Number(profile.data?.balance ?? 0);
+  const withdrawalCfg = useAppSetting("withdrawal");
+  const configuredAmount = Number(withdrawalCfg.data?.["amount"] ?? 0);
 
   const [amount, setAmount] = useState("");
   const [bank, setBank] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
-  const [benefit, setBenefit] = useState<RpcBenefit | null>(null);
+  const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (configuredAmount > 0 && !amount) setAmount(String(configuredAmount));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configuredAmount]);
 
   const numericAmount = Number(amount || 0);
   const valid =
@@ -56,7 +68,7 @@ function WithdrawPage() {
     bank.trim().length > 1 &&
     accountNumber.trim().length >= 10 &&
     accountName.trim().length > 2 &&
-    !!benefit;
+    code.trim().length > 3;
 
   function onNav(k: NavKey) {
     setTab(k);
@@ -66,17 +78,30 @@ function WithdrawPage() {
     if (k === "profile") navigate({ to: "/profile" });
   }
 
-  function submit() {
-    if (!valid) return;
+  async function submit() {
+    if (!valid || submitting) return;
     setSubmitting(true);
     setMessage("");
-    setTimeout(() => {
-      setSubmitting(false);
-      setMessage(
-        `Withdrawal of ${NGN.format(numericAmount)} to ${bank} is being processed. You'll be notified shortly.`,
-      );
-    }, 1600);
+    setError("");
+    const { data, error: err } = await supabase.rpc("request_withdrawal", {
+      _amount: numericAmount,
+      _bank_name: bank.trim(),
+      _account_number: accountNumber.trim(),
+      _account_name: accountName.trim(),
+      _code: code.trim(),
+    });
+    const res = (data ?? {}) as { ok?: boolean; error?: string };
+    setSubmitting(false);
+    if (err || !res.ok) {
+      setError(err?.message ?? res.error ?? "Could not submit withdrawal");
+      return;
+    }
+    await queryClient.invalidateQueries();
+    setMessage(
+      `Withdrawal of ${NGN.format(numericAmount)} to ${bank} is being processed. You'll be notified shortly.`,
+    );
   }
+
 
   return (
     <div className="min-h-[100dvh] w-full overflow-x-hidden pb-28">
@@ -157,8 +182,23 @@ function WithdrawPage() {
           </div>
         </section>
 
-        {/* RPC code */}
-        <RpcCodeInput benefit={benefit} onChange={setBenefit} />
+        {/* RPC withdrawal code */}
+        <section className="mt-6">
+          <h2 className="px-1 text-sm font-semibold">RPC Withdrawal Code</h2>
+          <div className="glass-card mt-3 rounded-3xl p-4">
+            <div className="flex items-center gap-2 rounded-2xl border border-border bg-secondary/50 px-3 focus-within:border-primary/70">
+              <KeyRound className="size-[18px] shrink-0 text-primary" strokeWidth={1.75} />
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="Enter RPC code"
+                aria-label="RPC withdrawal code"
+                autoCapitalize="characters"
+                className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </div>
+          </div>
+        </section>
 
         <p className="mt-4 flex items-start gap-2 px-1 text-xs text-muted-foreground">
           <ShieldCheck className="size-4 shrink-0 text-primary" />
@@ -174,11 +214,18 @@ function WithdrawPage() {
           Confirm Withdrawal
         </button>
 
+        {error ? (
+          <p className="mt-3 rounded-2xl bg-destructive/10 px-3 py-2.5 text-xs font-medium text-destructive">
+            {error}
+          </p>
+        ) : null}
+
         {message ? (
           <p className="mt-3 rounded-2xl bg-primary/10 px-3 py-2.5 text-xs font-medium text-primary">
             {message}
           </p>
         ) : null}
+
       </main>
 
       <BottomNav active={tab} onChange={onNav} />

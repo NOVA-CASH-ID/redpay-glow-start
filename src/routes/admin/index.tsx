@@ -64,7 +64,7 @@ function AdminDashboard() {
     const { data, error: err } = await supabase.rpc("admin_review_payment", {
       _payment_id: p.id,
       _status: next,
-      _note: null,
+      _note: "",
     });
     const res = (data ?? {}) as { ok?: boolean; error?: string };
     setBusy("");

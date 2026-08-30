@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Headphones, Send, MessageCircle, Mail, ArrowRight, LifeBuoy } from "lucide-react";
+import { ArrowLeft, Headphones, Send, MessageCircle, Mail, ArrowRight, LifeBuoy, Users } from "lucide-react";
 import { BottomNav, type NavKey } from "@/components/redpay/BottomNav";
+import { useAppSetting } from "@/hooks/useAdmin";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/support")({
   ssr: false,
@@ -22,33 +24,66 @@ export const Route = createFileRoute("/support")({
   component: SupportPage,
 });
 
-const CHANNELS = [
-  {
-    icon: Send,
-    title: "Telegram Support",
-    desc: "Chat with our support team on Telegram",
-    cta: "Open Telegram",
-    href: "https://t.me/redpaysupport",
-  },
-  {
-    icon: MessageCircle,
-    title: "WhatsApp Support",
-    desc: "Get quick assistance through WhatsApp",
-    cta: "Open WhatsApp",
-    href: "https://wa.me/2348000000000",
-  },
-  {
+type Channel = {
+  icon: typeof Send;
+  title: string;
+  desc: string;
+  cta: string;
+  href: string;
+};
+
+function SupportPage() {
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<NavKey>("support");
+  const support = useAppSetting("support");
+  const community = useAppSetting("community");
+  const s = (support.data ?? {}) as Record<string, string | boolean>;
+  const c = (community.data ?? {}) as Record<string, string | boolean>;
+
+  const channels: Channel[] = [];
+  if (s["telegram_enabled"] !== false && s["telegram_link"])
+    channels.push({
+      icon: Send,
+      title: String(s["telegram_text"] || "Telegram Support"),
+      desc: "Chat with our support team on Telegram",
+      cta: "Open Telegram",
+      href: String(s["telegram_link"]),
+    });
+  if (s["whatsapp_enabled"] !== false && s["whatsapp_link"])
+    channels.push({
+      icon: MessageCircle,
+      title: String(s["whatsapp_text"] || "WhatsApp Support"),
+      desc: "Get quick assistance through WhatsApp",
+      cta: "Open WhatsApp",
+      href: String(s["whatsapp_link"]),
+    });
+  channels.push({
     icon: Mail,
     title: "Email Support",
     desc: "Send us an email and we'll get back to you",
     cta: "Send Email",
     href: "mailto:support@redpay.app",
-  },
-] as const;
+  });
 
-function SupportPage() {
-  const navigate = useNavigate();
-  const [tab, setTab] = useState<NavKey>("support");
+  const groups: Channel[] = [];
+  if (c["whatsapp_enabled"] !== false && c["whatsapp_link"])
+    groups.push({
+      icon: Users,
+      title: String(c["whatsapp_text"] || "Join WhatsApp Group"),
+      desc: "Join the REDPAY community on WhatsApp",
+      cta: "Open Group",
+      href: String(c["whatsapp_link"]),
+    });
+  if (c["telegram_enabled"] !== false && c["telegram_link"])
+    groups.push({
+      icon: Users,
+      title: String(c["telegram_text"] || "Join Telegram Group"),
+      desc: "Join the REDPAY community on Telegram",
+      cta: "Open Group",
+      href: String(c["telegram_link"]),
+    });
+
+  const CHANNELS = [...channels, ...groups];
 
   function onNav(k: NavKey) {
     setTab(k);
@@ -56,6 +91,7 @@ function SupportPage() {
     if (k === "activity") navigate({ to: "/activity" });
     if (k === "profile") navigate({ to: "/profile" });
   }
+
 
   return (
     <div className="relative min-h-[100dvh] w-full overflow-x-hidden">
