@@ -39,18 +39,27 @@ const NGN = new Intl.NumberFormat("en-NG", {
 
 function WithdrawPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<NavKey>("wallet");
   const { session } = useSession();
   const profile = useProfile(session?.user.id);
   const balance = Number(profile.data?.balance ?? 0);
+  const withdrawalCfg = useAppSetting("withdrawal");
+  const configuredAmount = Number(withdrawalCfg.data?.["amount"] ?? 0);
 
   const [amount, setAmount] = useState("");
   const [bank, setBank] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
-  const [benefit, setBenefit] = useState<RpcBenefit | null>(null);
+  const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (configuredAmount > 0 && !amount) setAmount(String(configuredAmount));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configuredAmount]);
 
   const numericAmount = Number(amount || 0);
   const valid =
@@ -59,7 +68,7 @@ function WithdrawPage() {
     bank.trim().length > 1 &&
     accountNumber.trim().length >= 10 &&
     accountName.trim().length > 2 &&
-    !!benefit;
+    code.trim().length > 3;
 
   function onNav(k: NavKey) {
     setTab(k);
@@ -69,17 +78,30 @@ function WithdrawPage() {
     if (k === "profile") navigate({ to: "/profile" });
   }
 
-  function submit() {
-    if (!valid) return;
+  async function submit() {
+    if (!valid || submitting) return;
     setSubmitting(true);
     setMessage("");
-    setTimeout(() => {
-      setSubmitting(false);
-      setMessage(
-        `Withdrawal of ${NGN.format(numericAmount)} to ${bank} is being processed. You'll be notified shortly.`,
-      );
-    }, 1600);
+    setError("");
+    const { data, error: err } = await supabase.rpc("request_withdrawal", {
+      _amount: numericAmount,
+      _bank_name: bank.trim(),
+      _account_number: accountNumber.trim(),
+      _account_name: accountName.trim(),
+      _code: code.trim(),
+    });
+    const res = (data ?? {}) as { ok?: boolean; error?: string };
+    setSubmitting(false);
+    if (err || !res.ok) {
+      setError(err?.message ?? res.error ?? "Could not submit withdrawal");
+      return;
+    }
+    await queryClient.invalidateQueries();
+    setMessage(
+      `Withdrawal of ${NGN.format(numericAmount)} to ${bank} is being processed. You'll be notified shortly.`,
+    );
   }
+
 
   return (
     <div className="min-h-[100dvh] w-full overflow-x-hidden pb-28">
