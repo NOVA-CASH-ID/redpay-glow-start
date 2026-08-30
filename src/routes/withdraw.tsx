@@ -1,10 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Banknote, Landmark, Loader2, ShieldCheck, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Banknote, KeyRound, Landmark, Loader2, ShieldCheck, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/redpay/PageHeader";
 import { BottomNav, type NavKey } from "@/components/redpay/BottomNav";
-import { RpcCodeInput, type RpcBenefit } from "@/components/redpay/RpcCodeInput";
+import { supabase } from "@/integrations/supabase/client";
+import { useAppSetting } from "@/hooks/useAdmin";
 import { useProfile, useSession } from "@/hooks/useRedpay";
+
 
 export const Route = createFileRoute("/withdraw")({
   ssr: false,
