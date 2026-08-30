@@ -182,8 +182,23 @@ function WithdrawPage() {
           </div>
         </section>
 
-        {/* RPC code */}
-        <RpcCodeInput benefit={benefit} onChange={setBenefit} />
+        {/* RPC withdrawal code */}
+        <section className="mt-6">
+          <h2 className="px-1 text-sm font-semibold">RPC Withdrawal Code</h2>
+          <div className="glass-card mt-3 rounded-3xl p-4">
+            <div className="flex items-center gap-2 rounded-2xl border border-border bg-secondary/50 px-3 focus-within:border-primary/70">
+              <KeyRound className="size-[18px] shrink-0 text-primary" strokeWidth={1.75} />
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="Enter RPC code"
+                aria-label="RPC withdrawal code"
+                autoCapitalize="characters"
+                className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </div>
+          </div>
+        </section>
 
         <p className="mt-4 flex items-start gap-2 px-1 text-xs text-muted-foreground">
           <ShieldCheck className="size-4 shrink-0 text-primary" />
@@ -199,11 +214,18 @@ function WithdrawPage() {
           Confirm Withdrawal
         </button>
 
+        {error ? (
+          <p className="mt-3 rounded-2xl bg-destructive/10 px-3 py-2.5 text-xs font-medium text-destructive">
+            {error}
+          </p>
+        ) : null}
+
         {message ? (
           <p className="mt-3 rounded-2xl bg-primary/10 px-3 py-2.5 text-xs font-medium text-primary">
             {message}
           </p>
         ) : null}
+
       </main>
 
       <BottomNav active={tab} onChange={onNav} />
