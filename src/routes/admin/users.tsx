@@ -43,7 +43,7 @@ function AdminUsersPage() {
     const { data, error: err } = await supabase.rpc("admin_set_ban", {
       _user_id: u.id,
       _banned: banned,
-      _reason: reason || null,
+      _reason: reason || "",
     });
     const res = (data ?? {}) as { ok?: boolean; error?: string };
     setBusy(false);

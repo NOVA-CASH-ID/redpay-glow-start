@@ -111,7 +111,7 @@ export function useAppSetting(key: "bank" | "support" | "community" | "withdrawa
 export async function saveSetting(key: string, value: Record<string, unknown>) {
   const { data, error } = await supabase.rpc("admin_update_setting", {
     _key: key,
-    _value: value,
+    _value: value as never,
   });
   const res = (data ?? {}) as { ok?: boolean; error?: string };
   if (error || !res.ok) throw new Error(error?.message ?? res.error ?? "Could not save");
