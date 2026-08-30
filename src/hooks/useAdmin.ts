@@ -93,7 +93,7 @@ export function useAdminSettings() {
   });
 }
 
-export function useAppSetting(key: "bank" | "support" | "community") {
+export function useAppSetting(key: "bank" | "support" | "community" | "withdrawal") {
   return useQuery({
     queryKey: ["app-config", key],
     queryFn: async () => {
