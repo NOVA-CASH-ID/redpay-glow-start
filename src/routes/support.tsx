@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Headphones, Send, MessageCircle, Mail, ArrowRight, LifeBuoy } from "lucide-react";
+import { ArrowLeft, Headphones, Send, MessageCircle, Mail, ArrowRight, LifeBuoy, Users } from "lucide-react";
 import { BottomNav, type NavKey } from "@/components/redpay/BottomNav";
+import { useAppSetting } from "@/hooks/useAdmin";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/support")({
   ssr: false,
