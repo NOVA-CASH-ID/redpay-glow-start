@@ -459,6 +459,7 @@ export type Database = {
         Args: { _search?: string; _status?: string }
         Returns: Json
       }
+      admin_list_purchases: { Args: { _search?: string }; Returns: Json }
       admin_list_users: {
         Args: {
           _limit?: number
