@@ -30,6 +30,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminBankRouteImport } from './routes/admin/bank'
 import { Route as AdminCommunityRouteImport } from './routes/admin/community'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminPurchasesRouteImport } from './routes/admin/purchases'
 import { Route as AdminSupportRouteImport } from './routes/admin/support'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWithdrawalsRouteImport } from './routes/admin/withdrawals'
@@ -139,6 +140,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPurchasesRoute = AdminPurchasesRouteImport.update({
+  id: '/admin/purchases',
+  path: '/admin/purchases',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSupportRoute = AdminSupportRouteImport.update({
   id: '/admin/support',
   path: '/admin/support',
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/purchases': typeof AdminPurchasesRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -202,6 +209,7 @@ export interface FileRoutesByTo {
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/purchases': typeof AdminPurchasesRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -229,6 +237,7 @@ export interface FileRoutesById {
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/purchases': typeof AdminPurchasesRoute
   '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
+    | '/admin/purchases'
     | '/admin/support'
     | '/admin/users'
     | '/admin/withdrawals'
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
+    | '/admin/purchases'
     | '/admin/support'
     | '/admin/users'
     | '/admin/withdrawals'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
+    | '/admin/purchases'
     | '/admin/support'
     | '/admin/users'
     | '/admin/withdrawals'
@@ -336,6 +348,7 @@ export interface RootRouteChildren {
   AdminBankRoute: typeof AdminBankRoute
   AdminCommunityRoute: typeof AdminCommunityRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminPurchasesRoute: typeof AdminPurchasesRoute
   AdminSupportRoute: typeof AdminSupportRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWithdrawalsRoute: typeof AdminWithdrawalsRoute
@@ -491,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/purchases': {
+      id: '/admin/purchases'
+      path: '/admin/purchases'
+      fullPath: '/admin/purchases'
+      preLoaderRoute: typeof AdminPurchasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/support': {
       id: '/admin/support'
       path: '/admin/support'
@@ -536,6 +556,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBankRoute: AdminBankRoute,
   AdminCommunityRoute: AdminCommunityRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminPurchasesRoute: AdminPurchasesRoute,
   AdminSupportRoute: AdminSupportRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWithdrawalsRoute: AdminWithdrawalsRoute,

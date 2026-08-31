@@ -3,16 +3,17 @@ import { useEffect, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCw, ShieldCheck, LogOut, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsAdmin } from "@/hooks/useAdmin";
+import { useIsAdmin, useAdminStats } from "@/hooks/useAdmin";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/admin", label: "Dashboard" },
-  { to: "/admin/users", label: "Users" },
-  { to: "/admin/bank", label: "Bank" },
-  { to: "/admin/withdrawals", label: "Withdrawals" },
-  { to: "/admin/support", label: "Support" },
-  { to: "/admin/community", label: "Community" },
+  { to: "/admin", label: "Dashboard", badge: "pending" },
+  { to: "/admin/users", label: "Users", badge: "new_users_24h" },
+  { to: "/admin/purchases", label: "Purchases", badge: "new_purchases_24h" },
+  { to: "/admin/bank", label: "Bank", badge: "" },
+  { to: "/admin/withdrawals", label: "Withdrawals", badge: "pending_withdrawals" },
+  { to: "/admin/support", label: "Support", badge: "" },
+  { to: "/admin/community", label: "Community", badge: "" },
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {
@@ -20,11 +21,32 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { isAdmin, loading, session } = useIsAdmin();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const stats = useAdminStats();
 
   useEffect(() => {
     if (loading) return;
     if (!session || !isAdmin) navigate({ to: "/admin/login", replace: true });
   }, [loading, session, isAdmin, navigate]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("admin-activity")
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "withdrawals" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "purchases" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, queryClient]);
+
 
   async function signOut() {
     queryClient.clear();
@@ -73,21 +95,34 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <nav className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
             {NAV.map((n) => {
               const active = path === n.to;
+              const count = n.badge ? Number(stats.data?.[n.badge] ?? 0) : 0;
               return (
                 <Link
                   key={n.to}
                   to={n.to}
                   className={cn(
-                    "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+                    "relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
                     active
                       ? "gradient-red text-primary-foreground"
                       : "border border-border bg-secondary/60 text-foreground",
                   )}
                 >
                   {n.label}
+                  {count > 0 ? (
+                    <span
+                      aria-label={`${count} new`}
+                      className={cn(
+                        "grid min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-black",
+                        active ? "bg-primary-foreground/25" : "bg-primary text-primary-foreground",
+                      )}
+                    >
+                      {count > 99 ? "99+" : count}
+                    </span>
+                  ) : null}
                 </Link>
               );
             })}
+
           </nav>
         </div>
       </header>

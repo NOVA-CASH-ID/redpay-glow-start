@@ -89,3 +89,41 @@ export function formatNaira(amount: number | string | null | undefined) {
   const n = Number(amount ?? 0);
   return "₦" + n.toLocaleString("en-NG", { maximumFractionDigits: 0 });
 }
+
+export function useLatestPayment(userId?: string) {
+  return useQuery({
+    queryKey: ["latest-payment", userId],
+    enabled: !!userId,
+    refetchInterval: 10000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payments")
+        .select("*")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useLatestWithdrawal(userId?: string) {
+  return useQuery({
+    queryKey: ["latest-withdrawal", userId],
+    enabled: !!userId,
+    refetchInterval: 10000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("withdrawals")
+        .select("*")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
