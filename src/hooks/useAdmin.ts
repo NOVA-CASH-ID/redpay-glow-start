@@ -166,3 +166,33 @@ export function maskAccount(n: string) {
   if (!n) return "—";
   return n.length <= 4 ? n : "•".repeat(n.length - 4) + n.slice(-4);
 }
+
+export type AdminPurchase = {
+  id: string;
+  network: string;
+  card_type: string;
+  plan_label: string | null;
+  phone: string | null;
+  denomination: number | string;
+  quantity: number;
+  total: number | string;
+  rpc_code: string | null;
+  status: string;
+  created_at: string;
+  user_id: string | null;
+  account_id: string | null;
+  email: string | null;
+  full_name: string | null;
+};
+
+export function useAdminPurchases(search: string) {
+  return useQuery({
+    queryKey: ["admin-purchases", search],
+    refetchInterval: 20000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("admin_list_purchases", { _search: search });
+      if (error) throw error;
+      return ((data as { rows?: AdminPurchase[] })?.rows ?? []) as AdminPurchase[];
+    },
+  });
+}
