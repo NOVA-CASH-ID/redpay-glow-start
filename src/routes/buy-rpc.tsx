@@ -205,10 +205,10 @@ function BuyRpc() {
 
         <button
           onClick={() => setStatus("confirm")}
-          disabled={total > balance}
+          disabled={!benefit || total > balance}
           className="gradient-red glow-red mt-6 h-14 w-full rounded-2xl text-sm font-bold text-primary-foreground transition-transform active:scale-95 disabled:opacity-45"
         >
-          {total > balance ? "Insufficient balance" : `Buy Now · ${formatNaira(total)}`}
+          {!benefit ? "Enter RPC code to continue" : total > balance ? "Insufficient balance" : `Buy Now · ${formatNaira(total)}`}
         </button>
       </main>
 

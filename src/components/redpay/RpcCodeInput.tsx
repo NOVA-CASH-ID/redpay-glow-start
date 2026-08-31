@@ -36,7 +36,7 @@ export function RpcCodeInput({
     };
     if (err || !res.valid) {
       setState("error");
-      setError(err?.message ?? res.error ?? "Invalid code");
+      setError(res.error ?? "Wrong code");
       onChange(null);
       return;
     }
