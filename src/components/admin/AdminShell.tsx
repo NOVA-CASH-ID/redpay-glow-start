@@ -3,16 +3,17 @@ import { useEffect, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCw, ShieldCheck, LogOut, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsAdmin } from "@/hooks/useAdmin";
+import { useIsAdmin, useAdminStats } from "@/hooks/useAdmin";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/admin", label: "Dashboard" },
-  { to: "/admin/users", label: "Users" },
-  { to: "/admin/bank", label: "Bank" },
-  { to: "/admin/withdrawals", label: "Withdrawals" },
-  { to: "/admin/support", label: "Support" },
-  { to: "/admin/community", label: "Community" },
+  { to: "/admin", label: "Dashboard", badge: "pending" },
+  { to: "/admin/users", label: "Users", badge: "new_users_24h" },
+  { to: "/admin/purchases", label: "Purchases", badge: "new_purchases_24h" },
+  { to: "/admin/bank", label: "Bank", badge: "" },
+  { to: "/admin/withdrawals", label: "Withdrawals", badge: "pending_withdrawals" },
+  { to: "/admin/support", label: "Support", badge: "" },
+  { to: "/admin/community", label: "Community", badge: "" },
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {
@@ -20,11 +21,32 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { isAdmin, loading, session } = useIsAdmin();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const stats = useAdminStats();
 
   useEffect(() => {
     if (loading) return;
     if (!session || !isAdmin) navigate({ to: "/admin/login", replace: true });
   }, [loading, session, isAdmin, navigate]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("admin-activity")
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "withdrawals" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "purchases" }, () =>
+        queryClient.invalidateQueries(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, queryClient]);
+
 
   async function signOut() {
     queryClient.clear();
