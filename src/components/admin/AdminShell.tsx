@@ -95,21 +95,34 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <nav className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
             {NAV.map((n) => {
               const active = path === n.to;
+              const count = n.badge ? Number(stats.data?.[n.badge] ?? 0) : 0;
               return (
                 <Link
                   key={n.to}
                   to={n.to}
                   className={cn(
-                    "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+                    "relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
                     active
                       ? "gradient-red text-primary-foreground"
                       : "border border-border bg-secondary/60 text-foreground",
                   )}
                 >
                   {n.label}
+                  {count > 0 ? (
+                    <span
+                      aria-label={`${count} new`}
+                      className={cn(
+                        "grid min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-black",
+                        active ? "bg-primary-foreground/25" : "bg-primary text-primary-foreground",
+                      )}
+                    >
+                      {count > 99 ? "99+" : count}
+                    </span>
+                  ) : null}
                 </Link>
               );
             })}
+
           </nav>
         </div>
       </header>
