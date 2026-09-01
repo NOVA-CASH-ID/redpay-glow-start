@@ -124,7 +124,7 @@ function RpcPayment() {
 
     const { data, error: err } = await supabase.rpc("submit_payment", {
       _amount: amount,
-      _reference: null,
+      _reference: "",
       _screenshot_path: path,
       _purpose: "rpc_upgrade",
     });
