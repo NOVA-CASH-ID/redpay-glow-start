@@ -82,6 +82,12 @@ function AdminBankPage() {
             <dt className="text-muted-foreground">Account number</dt>
             <dd className="font-medium">{bank['account_number'] || "—"}</dd>
           </div>
+          <div className="flex justify-between gap-3">
+            <dt className="text-muted-foreground">Amount to pay</dt>
+            <dd className="font-medium">
+              {bank['amount'] ? "₦" + Number(bank['amount']).toLocaleString("en-NG") : "—"}
+            </dd>
+          </div>
         </dl>
       </section>
 
@@ -93,6 +99,12 @@ function AdminBankPage() {
           value={accountNumber}
           onChange={(v) => setAccountNumber(v.replace(/\D/g, "").slice(0, 11))}
           placeholder="0123456789"
+        />
+        <Field
+          label="Amount to pay (₦)"
+          value={amount}
+          onChange={(v) => setAmount(v.replace(/[^\d.]/g, ""))}
+          placeholder="5000"
         />
         <SaveButton onClick={save} saving={saving} message={message} />
       </SettingsCard>
