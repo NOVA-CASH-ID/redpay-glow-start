@@ -27,6 +27,7 @@ function AdminBankPage() {
   const [bankName, setBankName] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [amount, setAmount] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -35,6 +36,7 @@ function AdminBankPage() {
     setBankName(bank['bank_name'] ?? "");
     setAccountName(bank['account_name'] ?? "");
     setAccountNumber(bank['account_number'] ?? "");
+    setAmount(String(bank['amount'] ?? ""));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.data]);
 
@@ -45,10 +47,15 @@ function AdminBankPage() {
       if (bankName.trim().length < 2 || accountName.trim().length < 3 || accountNumber.trim().length < 10) {
         throw new Error("Enter a valid bank name, account name and 10-digit account number");
       }
+      const amountValue = Number(amount);
+      if (!Number.isFinite(amountValue) || amountValue <= 0) {
+        throw new Error("Enter a valid amount to pay");
+      }
       await saveSetting("bank", {
         bank_name: bankName.trim(),
         account_name: accountName.trim(),
         account_number: accountNumber.trim(),
+        amount: amountValue,
       });
       await queryClient.invalidateQueries();
       setMessage("Bank details updated. Users now see the new account.");
@@ -75,6 +82,12 @@ function AdminBankPage() {
             <dt className="text-muted-foreground">Account number</dt>
             <dd className="font-medium">{bank['account_number'] || "—"}</dd>
           </div>
+          <div className="flex justify-between gap-3">
+            <dt className="text-muted-foreground">Amount to pay</dt>
+            <dd className="font-medium">
+              {bank['amount'] ? "₦" + Number(bank['amount']).toLocaleString("en-NG") : "—"}
+            </dd>
+          </div>
         </dl>
       </section>
 
@@ -86,6 +99,12 @@ function AdminBankPage() {
           value={accountNumber}
           onChange={(v) => setAccountNumber(v.replace(/\D/g, "").slice(0, 11))}
           placeholder="0123456789"
+        />
+        <Field
+          label="Amount to pay (₦)"
+          value={amount}
+          onChange={(v) => setAmount(v.replace(/[^\d.]/g, ""))}
+          placeholder="5000"
         />
         <SaveButton onClick={save} saving={saving} message={message} />
       </SettingsCard>

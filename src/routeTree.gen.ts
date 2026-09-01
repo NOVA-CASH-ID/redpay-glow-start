@@ -26,6 +26,7 @@ import { Route as SupportRouteImport } from './routes/support'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WithdrawRouteImport } from './routes/withdraw'
 import { Route as WithdrawLoadingRouteImport } from './routes/withdraw-loading'
+import { Route as WithdrawStatusRouteImport } from './routes/withdraw-status'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminBankRouteImport } from './routes/admin/bank'
 import { Route as AdminCommunityRouteImport } from './routes/admin/community'
@@ -120,6 +121,11 @@ const WithdrawLoadingRoute = WithdrawLoadingRouteImport.update({
   path: '/withdraw-loading',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WithdrawStatusRoute = WithdrawStatusRouteImport.update({
+  id: '/withdraw-status',
+  path: '/withdraw-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
+  '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
+  '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/withdraw': typeof WithdrawRoute
   '/withdraw-loading': typeof WithdrawLoadingRoute
+  '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/withdraw'
     | '/withdraw-loading'
+    | '/withdraw-status'
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/withdraw'
     | '/withdraw-loading'
+    | '/withdraw-status'
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/withdraw'
     | '/withdraw-loading'
+    | '/withdraw-status'
     | '/admin/bank'
     | '/admin/community'
     | '/admin/login'
@@ -345,6 +357,7 @@ export interface RootRouteChildren {
   WelcomeRoute: typeof WelcomeRoute
   WithdrawRoute: typeof WithdrawRoute
   WithdrawLoadingRoute: typeof WithdrawLoadingRoute
+  WithdrawStatusRoute: typeof WithdrawStatusRoute
   AdminBankRoute: typeof AdminBankRoute
   AdminCommunityRoute: typeof AdminCommunityRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -476,6 +489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithdrawLoadingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/withdraw-status': {
+      id: '/withdraw-status'
+      path: '/withdraw-status'
+      fullPath: '/withdraw-status'
+      preLoaderRoute: typeof WithdrawStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -553,6 +573,7 @@ const rootRouteChildren: RootRouteChildren = {
   WelcomeRoute: WelcomeRoute,
   WithdrawRoute: WithdrawRoute,
   WithdrawLoadingRoute: WithdrawLoadingRoute,
+  WithdrawStatusRoute: WithdrawStatusRoute,
   AdminBankRoute: AdminBankRoute,
   AdminCommunityRoute: AdminCommunityRoute,
   AdminLoginRoute: AdminLoginRoute,

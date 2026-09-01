@@ -100,6 +100,7 @@ function WithdrawPage() {
     setMessage(
       `Withdrawal of ${NGN.format(numericAmount)} to ${bank} is being processed. You'll be notified shortly.`,
     );
+    navigate({ to: "/withdraw-status" });
   }
 
 
