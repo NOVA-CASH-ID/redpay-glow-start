@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
   Banknote,
@@ -8,10 +9,14 @@ import {
   Copy,
   Hash,
   Landmark,
+  Loader2,
   Send,
   Upload,
   UserRound,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAppSetting } from "@/hooks/useAdmin";
+import { useSession, formatNaira } from "@/hooks/useRedpay";
 
 export const Route = createFileRoute("/rpc-payment")({
   ssr: false,
@@ -31,26 +36,34 @@ export const Route = createFileRoute("/rpc-payment")({
   component: RpcPayment,
 });
 
-// Placeholder prototype data — edit these values freely.
-const PAYMENT_FIELDS = [
-  { icon: Banknote, label: "Amount to Pay", value: "₦X,XXX" },
-  { icon: Building2, label: "Bank Name", value: "BANK NAME" },
-  { icon: Hash, label: "Account Number", value: "XXXXXXXXXX" },
-  { icon: UserRound, label: "Account Name", value: "ACCOUNT HOLDER" },
-] as const;
-
 function RpcPayment() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const { session } = useSession();
+  const bankCfg = useAppSetting("bank");
+  const bank = (bankCfg.data ?? {}) as Record<string, string>;
+  const amount = Number(bank["amount"] ?? 0);
+
+  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     return () => {
       if (preview) URL.revokeObjectURL(preview);
     };
   }, [preview]);
+
+  const fields = [
+    { icon: Banknote, label: "Amount to Pay", value: amount > 0 ? formatNaira(amount) : "—" },
+    { icon: Building2, label: "Bank Name", value: bank["bank_name"] || "—" },
+    { icon: Hash, label: "Account Number", value: bank["account_number"] || "—" },
+    { icon: UserRound, label: "Account Name", value: bank["account_name"] || "—" },
+  ];
 
   async function copy(label: string, value: string) {
     try {
@@ -65,9 +78,64 @@ function RpcPayment() {
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
+    if (!["image/png", "image/jpeg"].includes(f.type)) {
+      setError("Upload a PNG or JPG image.");
+      return;
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      setError("Image must be 10MB or smaller.");
+      return;
+    }
+    setError("");
     if (preview) URL.revokeObjectURL(preview);
+    setFile(f);
     setPreview(URL.createObjectURL(f));
     setFileName(f.name);
+  }
+
+  async function submit() {
+    if (submitting) return;
+    const uid = session?.user.id;
+    if (!uid) {
+      navigate({ to: "/login" });
+      return;
+    }
+    if (!file) {
+      setError("Upload your payment proof first.");
+      return;
+    }
+    if (!(amount > 0)) {
+      setError("Payment amount is not configured yet. Contact support.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+
+    const ext = file.type === "image/png" ? "png" : "jpg";
+    const path = `${uid}/${Date.now()}.${ext}`;
+    const up = await supabase.storage
+      .from("payment-proofs")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (up.error) {
+      setSubmitting(false);
+      setError(up.error.message);
+      return;
+    }
+
+    const { data, error: err } = await supabase.rpc("submit_payment", {
+      _amount: amount,
+      _reference: null,
+      _screenshot_path: path,
+      _purpose: "rpc_upgrade",
+    });
+    const res = (data ?? {}) as { ok?: boolean; error?: string };
+    setSubmitting(false);
+    if (err || !res.ok) {
+      setError(err?.message ?? res.error ?? "Could not submit payment");
+      return;
+    }
+    await queryClient.invalidateQueries();
+    navigate({ to: "/rpc-pending" });
   }
 
   return (
@@ -100,7 +168,7 @@ function RpcPayment() {
         </header>
 
         <section className="mt-6 space-y-3">
-          {PAYMENT_FIELDS.map(({ icon: Icon, label, value }) => (
+          {fields.map(({ icon: Icon, label, value }) => (
             <div
               key={label}
               className="glass-card grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border-primary/25 p-4"
@@ -162,16 +230,27 @@ function RpcPayment() {
         </section>
 
         <button
-          onClick={() => navigate({ to: "/rpc-pending" })}
-          className="gradient-red glow-red mt-6 grid h-14 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl px-5 text-base font-bold text-primary-foreground transition-transform active:scale-95"
+          onClick={submit}
+          disabled={submitting}
+          className="gradient-red glow-red mt-6 grid h-14 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-2xl px-5 text-base font-bold text-primary-foreground transition-transform active:scale-95 disabled:opacity-50"
         >
-          <Send className="size-5" strokeWidth={2} />
-          <span className="truncate">I Have Made Payment</span>
+          {submitting ? (
+            <Loader2 className="size-5 animate-spin" />
+          ) : (
+            <Send className="size-5" strokeWidth={2} />
+          )}
+          <span className="truncate">{submitting ? "Submitting…" : "I Have Made Payment"}</span>
           <ArrowRight className="size-5" strokeWidth={2} />
         </button>
 
+        {error ? (
+          <p className="mt-3 rounded-2xl bg-destructive/10 px-3 py-2.5 text-xs font-medium text-destructive">
+            {error}
+          </p>
+        ) : null}
+
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          Prototype screen — placeholder details, no real transaction is processed.
+          Your proof is sent securely to the REDPAY review team.
         </p>
       </main>
     </div>
