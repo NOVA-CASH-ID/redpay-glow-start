@@ -136,6 +136,7 @@ export type Database = {
           reference: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          rpc_code: string | null
           screenshot_path: string | null
           status: string
           updated_at: string
@@ -151,6 +152,7 @@ export type Database = {
           reference?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          rpc_code?: string | null
           screenshot_path?: string | null
           status?: string
           updated_at?: string
@@ -166,6 +168,7 @@ export type Database = {
           reference?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          rpc_code?: string | null
           screenshot_path?: string | null
           status?: string
           updated_at?: string
@@ -495,6 +498,7 @@ export type Database = {
       check_rpc_code: { Args: { _code: string }; Returns: Json }
       check_withdrawal_code: { Args: { _code: string }; Returns: Json }
       claim_bonus: { Args: never; Returns: Json }
+      get_payment_rpc_code: { Args: { _payment_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
