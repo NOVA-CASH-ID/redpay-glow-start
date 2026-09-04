@@ -18,6 +18,7 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferRouteImport } from './routes/refer'
+import { Route as RpcCodeRouteImport } from './routes/rpc-code'
 import { Route as RpcLoadingRouteImport } from './routes/rpc-loading'
 import { Route as RpcNoticeRouteImport } from './routes/rpc-notice'
 import { Route as RpcPaymentRouteImport } from './routes/rpc-payment'
@@ -79,6 +80,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ReferRoute = ReferRouteImport.update({
   id: '/refer',
   path: '/refer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RpcCodeRoute = RpcCodeRouteImport.update({
+  id: '/rpc-code',
+  path: '/rpc-code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RpcLoadingRoute = RpcLoadingRouteImport.update({
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
+  '/rpc-code': typeof RpcCodeRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
+  '/rpc-code': typeof RpcCodeRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/refer': typeof ReferRoute
+  '/rpc-code': typeof RpcCodeRoute
   '/rpc-loading': typeof RpcLoadingRoute
   '/rpc-notice': typeof RpcNoticeRoute
   '/rpc-payment': typeof RpcPaymentRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/refer'
+    | '/rpc-code'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/refer'
+    | '/rpc-code'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/refer'
+    | '/rpc-code'
     | '/rpc-loading'
     | '/rpc-notice'
     | '/rpc-payment'
@@ -349,6 +361,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   ReferRoute: typeof ReferRoute
+  RpcCodeRoute: typeof RpcCodeRoute
   RpcLoadingRoute: typeof RpcLoadingRoute
   RpcNoticeRoute: typeof RpcNoticeRoute
   RpcPaymentRoute: typeof RpcPaymentRoute
@@ -431,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/refer'
       fullPath: '/refer'
       preLoaderRoute: typeof ReferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rpc-code': {
+      id: '/rpc-code'
+      path: '/rpc-code'
+      fullPath: '/rpc-code'
+      preLoaderRoute: typeof RpcCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rpc-loading': {
@@ -565,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   ReferRoute: ReferRoute,
+  RpcCodeRoute: RpcCodeRoute,
   RpcLoadingRoute: RpcLoadingRoute,
   RpcNoticeRoute: RpcNoticeRoute,
   RpcPaymentRoute: RpcPaymentRoute,

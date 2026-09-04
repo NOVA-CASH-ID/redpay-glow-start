@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { CheckCircle2, Clock, Headphones, Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { RedpayLogo } from "@/components/redpay/Logo";
 import { formatNaira, useLatestPayment, useSession } from "@/hooks/useRedpay";
@@ -25,6 +26,13 @@ function RpcPending() {
   const { session } = useSession();
   const payment = useLatestPayment(session?.user.id);
   const status = (payment.data?.status ?? "pending") as string;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (status !== "approved") return;
+    const t = setTimeout(() => navigate({ to: "/rpc-code" }), 2500);
+    return () => clearTimeout(t);
+  }, [status, navigate]);
 
   const view =
     status === "approved"
@@ -32,7 +40,7 @@ function RpcPending() {
           icon: CheckCircle2,
           tone: "text-emerald-400 border-emerald-400/30 bg-emerald-400/12",
           title: "Payment Approved",
-          body: "Your payment has been approved and your wallet has been credited.",
+          body: "Your payment has been approved. Taking you to your RPC code…",
           heading: "Approved",
         }
       : status === "rejected"
