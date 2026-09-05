@@ -12,8 +12,10 @@ const NAV = [
   { to: "/admin/purchases", label: "Purchases", badge: "new_purchases_24h" },
   { to: "/admin/bank", label: "Bank", badge: "" },
   { to: "/admin/withdrawals", label: "Withdrawals", badge: "pending_withdrawals" },
+  { to: "/admin/broadcast", label: "Broadcast", badge: "" },
   { to: "/admin/support", label: "Support", badge: "" },
   { to: "/admin/community", label: "Community", badge: "" },
+
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {

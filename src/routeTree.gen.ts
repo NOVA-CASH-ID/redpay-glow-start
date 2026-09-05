@@ -30,6 +30,7 @@ import { Route as WithdrawLoadingRouteImport } from './routes/withdraw-loading'
 import { Route as WithdrawStatusRouteImport } from './routes/withdraw-status'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminBankRouteImport } from './routes/admin/bank'
+import { Route as AdminBroadcastRouteImport } from './routes/admin/broadcast'
 import { Route as AdminCommunityRouteImport } from './routes/admin/community'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminPurchasesRouteImport } from './routes/admin/purchases'
@@ -142,6 +143,11 @@ const AdminBankRoute = AdminBankRouteImport.update({
   path: '/admin/bank',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBroadcastRoute = AdminBroadcastRouteImport.update({
+  id: '/admin/broadcast',
+  path: '/admin/broadcast',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCommunityRoute = AdminCommunityRouteImport.update({
   id: '/admin/community',
   path: '/admin/community',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/withdraw-loading': typeof WithdrawLoadingRoute
   '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
+  '/admin/broadcast': typeof AdminBroadcastRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/purchases': typeof AdminPurchasesRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/withdraw-loading': typeof WithdrawLoadingRoute
   '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
+  '/admin/broadcast': typeof AdminBroadcastRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/purchases': typeof AdminPurchasesRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/withdraw-loading': typeof WithdrawLoadingRoute
   '/withdraw-status': typeof WithdrawStatusRoute
   '/admin/bank': typeof AdminBankRoute
+  '/admin/broadcast': typeof AdminBroadcastRoute
   '/admin/community': typeof AdminCommunityRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/purchases': typeof AdminPurchasesRoute
@@ -284,6 +293,7 @@ export interface FileRouteTypes {
     | '/withdraw-loading'
     | '/withdraw-status'
     | '/admin/bank'
+    | '/admin/broadcast'
     | '/admin/community'
     | '/admin/login'
     | '/admin/purchases'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/withdraw-loading'
     | '/withdraw-status'
     | '/admin/bank'
+    | '/admin/broadcast'
     | '/admin/community'
     | '/admin/login'
     | '/admin/purchases'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/withdraw-loading'
     | '/withdraw-status'
     | '/admin/bank'
+    | '/admin/broadcast'
     | '/admin/community'
     | '/admin/login'
     | '/admin/purchases'
@@ -372,6 +384,7 @@ export interface RootRouteChildren {
   WithdrawLoadingRoute: typeof WithdrawLoadingRoute
   WithdrawStatusRoute: typeof WithdrawStatusRoute
   AdminBankRoute: typeof AdminBankRoute
+  AdminBroadcastRoute: typeof AdminBroadcastRoute
   AdminCommunityRoute: typeof AdminCommunityRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPurchasesRoute: typeof AdminPurchasesRoute
@@ -530,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBankRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/broadcast': {
+      id: '/admin/broadcast'
+      path: '/admin/broadcast'
+      fullPath: '/admin/broadcast'
+      preLoaderRoute: typeof AdminBroadcastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/community': {
       id: '/admin/community'
       path: '/admin/community'
@@ -596,6 +616,7 @@ const rootRouteChildren: RootRouteChildren = {
   WithdrawLoadingRoute: WithdrawLoadingRoute,
   WithdrawStatusRoute: WithdrawStatusRoute,
   AdminBankRoute: AdminBankRoute,
+  AdminBroadcastRoute: AdminBroadcastRoute,
   AdminCommunityRoute: AdminCommunityRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPurchasesRoute: AdminPurchasesRoute,
