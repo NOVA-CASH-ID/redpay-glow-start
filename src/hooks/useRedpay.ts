@@ -70,9 +70,17 @@ export function useNotifications(userId?: string) {
   });
 }
 
+export async function resolveAnnouncementImage(value: string | null) {
+  if (!value) return null;
+  if (/^https?:\/\//i.test(value)) return value;
+  const { data } = await supabase.storage.from("announcements").createSignedUrl(value, 3600);
+  return data?.signedUrl ?? null;
+}
+
 export function useAnnouncements() {
   return useQuery({
     queryKey: ["announcements"],
+    refetchInterval: 30000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("announcements")
@@ -80,10 +88,16 @@ export function useAnnouncements() {
         .eq("active", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data ?? [];
+      return Promise.all(
+        (data ?? []).map(async (a) => ({
+          ...a,
+          image_url: await resolveAnnouncementImage(a.image_url),
+        })),
+      );
     },
   });
 }
+
 
 export function formatNaira(amount: number | string | null | undefined) {
   const n = Number(amount ?? 0);
